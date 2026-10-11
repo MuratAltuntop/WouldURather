@@ -12,7 +12,7 @@
 
 **Topluluğun tarafını seçtiği, Z-Kuşağı odaklı modern neon karanlık temalı interaktif ikilem web uygulaması.**
 
-🌐 **Canlı Proje (Vercel):** [https://vercel.com/murat2402/woulduratherr](https://vercel.com/murat2402/woulduratherr)
+🌐 **Canlı Proje (Vercel):** [https://woulduratherr.vercel.app](https://woulduratherr.vercel.app)
 
 </div>
 
