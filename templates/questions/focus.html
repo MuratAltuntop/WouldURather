@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Hangisini Seçersin? | Odak Modu{% endblock %}
+
+{% block content %}
+<div class="focus-container">
+  {% if question %}
+    <div class="focus-header">
+      <span class="badge-tag">⚡ Zorlu İkilem #{{ question.id }}</span>
+      <h1 class="question-title">{{ question.title }}</h1>
+      <div class="question-meta">
+        <span>Soran: <strong class="author-badge">@{{ question.author.username }}</strong></span>
+        <span>•</span>
+        <span class="votes-count-badge total-votes-text">{{ question.total_votes }} oy</span>
+      </div>
+    </div>
+
+    <div class="focus-card dilemma-card" data-question-id="{{ question.id }}">
+      <div class="dilemma-arena">
+        <!-- A SEÇENEĞİ (CYAN) -->
+        <div class="choice-box choice-box-cyan">
+          <button 
+            type="button" 
+            class="choice-btn"
+            data-choice-id="{{ question.choice_a.id }}"
+            data-question-id="{{ question.id }}"
+            {% if voted_choice_id %}disabled{% endif %}
+          >
+            <span class="choice-tag">SEÇENEK A</span>
+            <span class="choice-text">{{ question.choice_a.choice_text }}</span>
+          </button>
+
+          {% if voted_choice_id == question.choice_a.id %}
+            <span class="choice-voted-badge">✓ Senin Tercihin</span>
+          {% endif %}
+
+          <div class="result-container {% if voted_choice_id %}show{% endif %}">
+            <div class="progress-track">
+              <div class="progress-fill fill-cyan fill-a" style="{% if voted_choice_id %}width: {{ question.pct_a }}%;{% endif %}"></div>
+            </div>
+            <div class="result-stats">
+              <span class="percentage-text pct-a-text">{% if voted_choice_id %}%{{ question.pct_a }}{% endif %}</span>
+              <span class="votes-label votes-a-text">{% if voted_choice_id %}{{ question.choice_a.votes }} oy{% endif %}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- VS ORTA ROZET -->
+        <div class="vs-divider">
+          <div class="vs-circle">VS</div>
+        </div>
+
+        <!-- B SEÇENEĞİ (PINK) -->
+        <div class="choice-box choice-box-pink">
+          <button 
+            type="button" 
+            class="choice-btn"
+            data-choice-id="{{ question.choice_b.id }}"
+            data-question-id="{{ question.id }}"
+            {% if voted_choice_id %}disabled{% endif %}
+          >
+            <span class="choice-tag">SEÇENEK B</span>
+            <span class="choice-text">{{ question.choice_b.choice_text }}</span>
+          </button>
+
+          {% if voted_choice_id == question.choice_b.id %}
+            <span class="choice-voted-badge">✓ Senin Tercihin</span>
+          {% endif %}
+
+          <div class="result-container {% if voted_choice_id %}show{% endif %}">
+            <div class="progress-track">
+              <div class="progress-fill fill-pink fill-b" style="{% if voted_choice_id %}width: {{ question.pct_b }}%;{% endif %}"></div>
+            </div>
+            <div class="result-stats">
+              <span class="percentage-text pct-b-text">{% if voted_choice_id %}%{{ question.pct_b }}{% endif %}</span>
+              <span class="votes-label votes-b-text">{% if voted_choice_id %}{{ question.choice_b.votes }} oy{% endif %}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OY VERENLER (SADECE KULLANICI ADLARI) -->
+      <div class="voters-preview">
+        <span>👥 Son Tarafını Seçenler:</span>
+        <div class="voters-list">
+          {% for vote in question.recent_voters %}
+            {% if vote.user %}
+              <a href="{% url 'user_profile' vote.user.username %}" class="voter-pill">
+                @{{ vote.user.username }}
+              </a>
+            {% endif %}
+          {% empty %}
+            <span style="font-size:0.8rem; color:var(--text-dim);">İlk oy veren sen ol!</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- SIRADAKİ İKİLEM BUTONU -->
+    <div id="focus-next-wrapper" class="focus-next-wrapper" style="{% if not voted_choice_id %}display:none;{% endif %}">
+      <a href="{% url 'next_question_from' question.id %}" class="btn-next-action">
+        <span>Sıradaki İkilem</span>
+        <span>👉</span>
+      </a>
+    </div>
+
+  {% else %}
+    <!-- Soru Yoksa -->
+    <div class="empty-state">
+      <div class="empty-state-icon">🎲</div>
+      <h2>Henüz hiç ikilem eklenmemiş!</h2>
+      <p style="margin: 12px 0 24px;">Topluluğu ikiye bölecek ilk soruyu sen sormak ister misin?</p>
+      <a href="{% url 'create_question' %}" class="nav-btn-create" style="display:inline-flex;">
+        + İlk İkilemi Sen Yarat
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

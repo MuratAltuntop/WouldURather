@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Giriş Yap | Hangisini Seçersin?{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-header">
+    <span class="badge-tag">🎮 Giriş Yap</span>
+    <h1 class="form-title">Aramıza Dön</h1>
+    <p class="form-subtitle">Kendi ikilemlerini sormak ve profilini yönetmek için giriş yap.</p>
+  </div>
+
+  <form method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="form-label" for="id_username">Kullanıcı Adı:</label>
+      <input type="text" name="username" id="id_username" class="neon-input" placeholder="Kullanıcı adınız" required autofocus>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="id_password">Şifre:</label>
+      <input type="password" name="password" id="id_password" class="neon-input" placeholder="••••••••" required>
+    </div>
+
+    {% if form.errors %}
+      <div style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.3); color:#f87171; padding:12px; border-radius:var(--radius-sm); font-size:0.88rem; margin-bottom:16px;">
+        Kullanıcı adı veya şifre hatalı! Lütfen tekrar deneyin.
+      </div>
+    {% endif %}
+
+    <button type="submit" class="btn-submit">
+      Giriş Yap 🚀
+    </button>
+
+    <div class="form-footer">
+      Hesabın yok mu? <a href="{% url 'register' %}">Hemen Kayıt Ol</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Kayıt Ol | Hangisini Seçersin?{% endblock %}
+
+{% block content %}
+<div class="form-card">
+  <div class="form-header">
+    <span class="badge-tag">⚡ Yeni Üye</span>
+    <h1 class="form-title">Tarafını Seçmeye Başla</h1>
+    <p class="form-subtitle">Hemen ücretsiz kayıt ol, kendi ikilemlerini topluluğa sun!</p>
+  </div>
+
+  {% if form.non_field_errors %}
+    <div style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.3); color:#f87171; padding:12px; border-radius:var(--radius-sm); font-size:0.88rem; margin-bottom:20px;">
+      {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="form-label" for="{{ form.username.id_for_label }}">Kullanıcı Adı:</label>
+      {{ form.username }}
+      {% if form.username.errors %}
+        <div style="color:#f87171; font-size:0.85rem; margin-top:6px;">
+          {{ form.username.errors.0 }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="{{ form.email.id_for_label }}">
+        E-posta (İsteğe bağlı):
+      </label>
+      {{ form.email }}
+      <small style="color:var(--text-dim); font-size:0.8rem; display:block; margin-top:4px;">
+        🔒 Gizlilik Güvencesi: E-posta adresiniz hiçbir sayfada ve profilinizde gösterilmez.
+      </small>
+      {% if form.email.errors %}
+        <div style="color:#f87171; font-size:0.85rem; margin-top:6px;">
+          {{ form.email.errors.0 }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="{{ form.password1.id_for_label }}">Şifre:</label>
+      {{ form.password1 }}
+      {% if form.password1.errors %}
+        <div style="color:#f87171; font-size:0.85rem; margin-top:6px;">
+          {{ form.password1.errors.0 }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="{{ form.password2.id_for_label }}">Şifre Tekrar:</label>
+      {{ form.password2 }}
+      {% if form.password2.errors %}
+        <div style="color:#f87171; font-size:0.85rem; margin-top:6px;">
+          {{ form.password2.errors.0 }}
+        </div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn-submit">
+      Hesap Oluştur ✨
+    </button>
+
+    <div class="form-footer">
+      Zaten bir hesabın var mı? <a href="{% url 'login' %}">Giriş Yap</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

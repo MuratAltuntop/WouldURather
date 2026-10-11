@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}Hangisini Seçersin? | Z-Gamer Would You Rather{% endblock %}</title>
+
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Custom Neon Theme Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="{% url 'home' %}" class="logo">
+        <span class="logo-cyan">HANGİSİNİ</span>
+        <span class="logo-vs">VS</span>
+        <span class="logo-pink">SEÇERSİN?</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li>
+            <a href="{% url 'home' %}" class="nav-link {% if active_nav == 'focus' %}active{% endif %}">
+              🎯 Odak Modu
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'feed' %}" class="nav-link {% if active_nav == 'feed' %}active{% endif %}">
+              🔥 Tüm İkilemler
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'create_question' %}" class="nav-btn-create">
+              <span>+</span> İkilem Yarat
+            </a>
+          </li>
+
+          {% if user.is_authenticated %}
+            <li>
+              <a href="{% url 'profile' %}" class="nav-user-tag">
+                @{{ user.username }}
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'logout' %}" class="nav-link">
+                Çıkış
+              </a>
+            </li>
+          {% else %}
+            <li>
+              <a href="{% url 'login' %}" class="nav-link">
+                Giriş Yap
+              </a>
+            </li>
+            <li>
+              <a href="{% url 'register' %}" class="nav-link">
+                Kayıt Ol
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+    <!-- Messages / Toasts -->
+    {% if messages %}
+      <div class="messages-container">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>⚡ <strong>Hangisini Seçersin?</strong> — Topluluk Tarafını Seçiyor. Tüm hakları saklıdır.</p>
+  </footer>
+
+  <!-- Main JS -->
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Tüm İkilemler | Hangisini Seçersin?{% endblock %}
+
+{% block content %}
+<div class="feed-header">
+  <div>
+    <h1 class="feed-title">🔥 Tüm İkilemler</h1>
+    <p style="color:var(--text-muted); font-size:0.95rem; margin-top:4px;">
+      Topluluk tarafından sorulan tüm zorlu sorular. Tarafını seç ve sonuçları gör!
+    </p>
+  </div>
+  <a href="{% url 'create_question' %}" class="nav-btn-create">
+    + Yeni İkilem
+  </a>
+</div>
+
+<div class="feed-list">
+  {% for question in page_obj %}
+    <div class="feed-card dilemma-card" data-question-id="{{ question.id }}">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+        <h2 style="font-size:1.35rem; font-weight:800; color:#fff;">
+          <a href="{% url 'home' %}?qid={{ question.id }}" style="color:inherit; text-decoration:none;">
+            {{ question.title }}
+          </a>
+        </h2>
+        <span class="votes-count-badge total-votes-text">{{ question.total_votes }} oy</span>
+      </div>
+
+      <div style="font-size:0.85rem; color:var(--text-dim); margin-bottom:20px;">
+        Soran: <strong class="author-badge">@{{ question.author.username }}</strong> • {{ question.created_at|date:"d M Y" }}
+      </div>
+
+      <!-- DİLEMMA SEÇENEKLERİ -->
+      <div class="dilemma-arena" style="margin-bottom:16px;">
+        <!-- A SEÇENEĞİ -->
+        <div class="choice-box choice-box-cyan">
+          <button 
+            type="button" 
+            class="choice-btn"
+            style="min-height:110px; padding:16px;"
+            data-choice-id="{{ question.choice_a.id }}"
+            data-question-id="{{ question.id }}"
+            {% if question.id in voted_map %}disabled{% endif %}
+          >
+            <span class="choice-tag">A</span>
+            <span class="choice-text">{{ question.choice_a.choice_text }}</span>
+          </button>
+
+          {% if voted_map|dictsort:"0" %}
+            {# checked via voted_map #}
+          {% endif %}
+
+          <div class="result-container {% if question.id in voted_map %}show{% endif %}">
+            <div class="progress-track" style="height:16px;">
+              <div class="progress-fill fill-cyan fill-a" style="{% if question.id in voted_map %}width: {{ question.pct_a }}%;{% endif %}"></div>
+            </div>
+            <div class="result-stats">
+              <span class="percentage-text pct-a-text" style="font-size:1.05rem;">
+                {% if question.id in voted_map %}%{{ question.pct_a }}{% endif %}
+              </span>
+              <span class="votes-label votes-a-text">
+                {% if question.id in voted_map %}{{ question.choice_a.votes }} oy{% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- VS -->
+        <div class="vs-divider">
+          <div class="vs-circle" style="width:40px; height:40px; font-size:0.85rem;">VS</div>
+        </div>
+
+        <!-- B SEÇENEĞİ -->
+        <div class="choice-box choice-box-pink">
+          <button 
+            type="button" 
+            class="choice-btn"
+            style="min-height:110px; padding:16px;"
+            data-choice-id="{{ question.choice_b.id }}"
+            data-question-id="{{ question.id }}"
+            {% if question.id in voted_map %}disabled{% endif %}
+          >
+            <span class="choice-tag">B</span>
+            <span class="choice-text">{{ question.choice_b.choice_text }}</span>
+          </button>
+
+          <div class="result-container {% if question.id in voted_map %}show{% endif %}">
+            <div class="progress-track" style="height:16px;">
+              <div class="progress-fill fill-pink fill-b" style="{% if question.id in voted_map %}width: {{ question.pct_b }}%;{% endif %}"></div>
+            </div>
+            <div class="result-stats">
+              <span class="percentage-text pct-b-text" style="font-size:1.05rem;">
+                {% if question.id in voted_map %}%{{ question.pct_b }}{% endif %}
+              </span>
+              <span class="votes-label votes-b-text">
+                {% if question.id in voted_map %}{{ question.choice_b.votes }} oy{% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OY VERENLER -->
+      <div class="voters-preview" style="margin-top:14px; padding-top:12px;">
+        <span style="font-size:0.8rem;">👥 Son oylayanlar:</span>
+        <div class="voters-list">
+          {% for vote in question.recent_voters %}
+            {% if vote.user %}
+              <a href="{% url 'user_profile' vote.user.username %}" class="voter-pill" style="font-size:0.75rem;">
+                @{{ vote.user.username }}
+              </a>
+            {% endif %}
+          {% empty %}
+            <span style="font-size:0.75rem; color:var(--text-dim);">Henüz üye oyu yok</span>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  {% empty %}
+    <div class="empty-state">
+      <div class="empty-state-icon">📭</div>
+      <h2>Henüz ikilem bulunamadı.</h2>
+      <a href="{% url 'create_question' %}" class="nav-btn-create" style="margin-top:16px; display:inline-flex;">
+        + İlk İkilemi Yarat
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
+<!-- SAYFALAMA -->
+{% if page_obj.has_other_pages %}
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">← Önceki</a>
+    {% endif %}
+    
+    <span class="page-current">Sayfa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="page-btn">Sonraki →</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

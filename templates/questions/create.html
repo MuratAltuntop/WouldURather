@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Yeni İkilem Yarat | Hangisini Seçersin?{% endblock %}
+
+{% block content %}
+<div class="form-card" style="max-width: 620px;">
+  <div class="form-header">
+    <span class="badge-tag">✨ Topluluğa Meydan Oku</span>
+    <h1 class="form-title">Yeni İkilem Yarat</h1>
+    <p class="form-subtitle">Topluluğu ikiye bölecek, herkesi kararsız bırakacak bir ikilem sor!</p>
+  </div>
+
+  <form method="POST" action="{% url 'create_question' %}">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="form-label" for="{{ form.title.id_for_label }}">
+        🤔 İkilem Sorusu:
+      </label>
+      {{ form.title }}
+      {% if form.title.errors %}
+        <div style="color:#f87171; font-size:0.85rem; margin-top:6px;">
+          {{ form.title.errors.0 }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin: 24px 0;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label" for="{{ form.choice_a.id_for_label }}" style="color:var(--neon-cyan);">
+          🟦 1. Taraf (A Seçeneği):
+        </label>
+        {{ form.choice_a }}
+        {% if form.choice_a.errors %}
+          <div style="color:#f87171; font-size:0.85rem; margin-top:6px;">
+            {{ form.choice_a.errors.0 }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label" for="{{ form.choice_b.id_for_label }}" style="color:var(--neon-pink);">
+          🟪 2. Taraf (B Seçeneği):
+        </label>
+        {{ form.choice_b }}
+        {% if form.choice_b.errors %}
+          <div style="color:#f87171; font-size:0.85rem; margin-top:6px;">
+            {{ form.choice_b.errors.0 }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px; margin-bottom:24px; font-size:0.85rem; color:var(--text-muted);">
+      💡 <strong>İpucu:</strong> Seçeneklerin birbirine denk ve zorlayıcı olması oy sayısını katlar! Örneğin: "Görünmez olmak vs Zamanda yolculuk yapmak".
+    </div>
+
+    <button type="submit" class="btn-submit">
+      🚀 İkilemi Yayınla ve Oylamaya Aç
+    </button>
+  </form>
+</div>
+{% endblock %}
